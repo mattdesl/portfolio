@@ -1,0 +1,132 @@
+@font-face {
+  font-family: 'Nexa Bold';
+  src: url('../fonts/nexa_bold-webfont.eot');
+  src: url('../fonts/nexa_bold-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/nexa_bold-webfont.woff') format('woff'), url('../fonts/nexa_bold-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Nexa Light';
+  src: url('../fonts/nexa_light-webfont.eot');
+  src: url('../fonts/nexa_light-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/nexa_light-webfont.woff') format('woff'), url('../fonts/nexa_light-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+.bold {
+  font-family: 'Nexa Bold', 'Arial', 'sans-serif';
+  font-weight: bold;
+}
+/**
+ * Created with TexturePacker http://www.codeandweb.com/texturepacker
+ *
+ * SmartUpdateHash: $TexturePacker:SmartUpdate:dd61bd9b4ba0ed3cfc9106267123195d:1/1$
+ */
+.icons {
+  display: inline-block;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-image: url('icons.png?$TexturePacker:SmartUpdate:dd61bd9b4ba0ed3cfc9106267123195d:1/1$');
+}
+.icons.at {
+  width: 16px;
+  height: 16px;
+  background-position: -2px -2px;
+}
+.icons.at2x {
+  width: 32px;
+  height: 32px;
+  background-position: -20px -2px;
+}
+.icons.at4x {
+  width: 64px;
+  height: 64px;
+  background-position: -2px -36px;
+}
+.icons.flask {
+  width: 16px;
+  height: 16px;
+  background-position: -2px -102px;
+}
+.icons.flask2x {
+  width: 32px;
+  height: 32px;
+  background-position: -20px -102px;
+}
+.icons.flask4x {
+  width: 64px;
+  height: 64px;
+  background-position: -2px -136px;
+}
+.icons.fork {
+  width: 16px;
+  height: 16px;
+  background-position: -2px -202px;
+}
+.icons.fork2x {
+  width: 32px;
+  height: 32px;
+  background-position: -20px -202px;
+}
+.icons.fork4x {
+  width: 64px;
+  height: 64px;
+  background-position: -2px -236px;
+}
+.icons.link {
+  width: 16px;
+  height: 16px;
+  background-position: -2px -302px;
+}
+.icons.link2x {
+  width: 32px;
+  height: 32px;
+  background-position: -20px -302px;
+}
+.icons.link4x {
+  width: 64px;
+  height: 64px;
+  background-position: -2px -336px;
+}
+.icons.power {
+  width: 16px;
+  height: 16px;
+  background-position: -2px -402px;
+}
+.icons.power2x {
+  width: 32px;
+  height: 32px;
+  background-position: -20px -402px;
+}
+.icons.power4x {
+  width: 64px;
+  height: 64px;
+  background-position: -2px -436px;
+}
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+}
+body {
+  color: white;
+  overflow: hidden;
+  font-family: 'Nexa Light', 'Arial', 'sans-serif';
+  background: #181818 url('../images/bg.png') repeat top left;
+}
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.header {
+  color: #cccaca;
+  text-align: center;
+}
+.header span:first-child {
+  font-family: 'Nexa Bold', 'Arial', 'sans-serif';
+  font-weight: bold;
+}
