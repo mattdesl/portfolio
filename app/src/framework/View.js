@@ -4,7 +4,8 @@ var Signal = require('signals');
 var View = new Class({
     
     initialize: 
-    function View(parentContainer, data) {
+    function View(manager, parentContainer, data) {
+        this.manager = manager;
         this.parentContainer = parentContainer;
         this.data = data;
         this.width = 0;

@@ -7,8 +7,8 @@ var CanvasView = new Class({
     Extends: View,
 
     initialize: 
-    function CanvasView(parentContainer, data) {
-        View.call(this, parentContainer, data);
+    function CanvasView(manager, parentContainer, data) {
+        View.call(this, manager, parentContainer, data);
     },
 
     setup: function() {

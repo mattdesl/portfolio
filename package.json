@@ -10,7 +10,8 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "signals": "git://github.com/millermedeiros/js-signals#v1.0.0",
-    "klasse": "git://github.com/mattdesl/klasse"
+    "klasse": "git://github.com/mattdesl/klasse",
+    "gl-matrix": "git+https://github.com/toji/gl-matrix.git#v2.2.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

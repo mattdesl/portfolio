@@ -7,7 +7,8 @@ var SIZE_MOBILE = SIZE_DESKTOP*1.25;
 
 var ICON_SIZE = 16;
 var BORDER_SIZE = 2;
-var PADDING = 15;
+var ICON_PADDING = 15;
+var MOBILE_ICON_PADDING = 10;
 
 var Button = new Class({
 	   
@@ -19,14 +20,18 @@ var Button = new Class({
         var iconName = icon;
         var scale = 1.0;
         this.buttonSize = SIZE_DESKTOP;
-        this.padding = PADDING;
+        this.padding = ICON_PADDING;
+        this.idleAlpha = 0.2;
         if (settings.isMobile) {
+            this.idleAlpha = 0.5;
+            this.padding = MOBILE_ICON_PADDING;
             this.buttonSize = SIZE_MOBILE;
             iconName += (settings.isMobile ? "4x" : "");
             scale = 0.25;
         }
 
         this.ignoreTextEffect = false;
+        this.ignoreHover = false;
 
         this.container = new Widget();
         this.container.size(this.buttonSize, this.buttonSize);
@@ -67,7 +72,7 @@ var Button = new Class({
         this.label = new Widget();
         this.label.css({
             fontSize: "14px",
-            opacity: 0.20,
+            opacity: this.idleAlpha,
             textTransform: "uppercase",
             verticalAlign: "middle",
             textAlign: "left",
@@ -75,7 +80,7 @@ var Button = new Class({
         }).addClass("bold noselect");
 
         this.label.text(text);
-        this.label.position(this.buttonSize + PADDING, undefined).relative();
+        this.label.position(this.buttonSize + this.padding, undefined).relative();
 
         this.container.append(this.button, this.icon, this.label);
 
@@ -90,24 +95,39 @@ var Button = new Class({
 
         this.button.css("cursor", "pointer");
 
-        this.button.bind("click touchdown", function(ev) {
+        //include the text on mobile..
+        if (settings.isMobile) {
+            var mobileWidth = 190;
+            this.size(mobileWidth, undefined);
+            this.container.size(mobileWidth, undefined);
+            this.button.size("100%", undefined);
+            this.icon.css("right", "auto");
+            this.css("margin", "10px auto");
+        }
+
+        this.container.bind("click touchstart", function(ev) {
             TweenLite.fromTo(this.label, 2.0, {
-                opacity: 0.5
+                opacity: this.idleAlpha + 0.3
             }, {
-                opacity: 0.2,
+                opacity: this.idleAlpha,
                 ease: Expo.easeOut
             });
 
-            this.animateOutText(0.25);
+            if (!settings.isMobile)
+                this.animateOutText(0.25);
         }.bind(this));
 
         this.button.mouseenter(function() {
+            if (this.ignoreHover)
+                return;
             this.animateInButton();
             if (!this.ignoreTextEffect) {
                 this.animateInText();
             }
         }.bind(this));
         this.button.mouseleave(function() {
+            if (this.ignoreHover)
+                return;
             this.animateOutButton();
             if (!this.ignoreTextEffect) {
                 this.animateOutText();
@@ -119,12 +139,25 @@ var Button = new Class({
     animateInButton: function(delay, killAfter, onKillComplete) {
         delay = delay || 0;
 
-        TweenLite.to(this.button, 1., {
-            opacity: 1.0,
-            delay: delay,
-            ease: Expo.easeOut,
-            overwrite: 1
-        });
+        if (settings.isMobile) {
+            TweenLite.fromTo(this.button, 0.75, {
+                scaleX: 0.0,
+                opacity: 1.0,
+                transformOrigin: "left center"
+            }, {
+                delay: delay,
+                scaleX: 1.0,
+                ease: Expo.easeOut,
+                transformOrigin: "left center"
+            });
+        } else {
+            TweenLite.to(this.button, 1., {
+                opacity: 1.0,
+                delay: delay,
+                ease: Expo.easeOut,
+                overwrite: 1
+            });
+        }
 
         if (killAfter) {
             this.animateOut(killAfter, onKillComplete);
@@ -141,6 +174,16 @@ var Button = new Class({
             ease: Expo.easeOut
         });
 
+        if (settings.isMobile) {
+            // TweenLite.fromTo(this.label, 0.5, {
+            //     opacity: 0.0
+            // }, {
+            //     opacity: this.idleAlpha,
+            //     delay: delay,
+            //     ease: Expo.easeOut
+            // });
+        }
+
         if (killAfter) {
             this.animateOut(killAfter, onKillComplete);
         }
@@ -148,6 +191,9 @@ var Button = new Class({
 
     animateIn: function(delay, killAfter, onKillComplete) {
         this.animateInButton(delay, killAfter, onKillComplete);
+        if (settings.isMobile) {
+            delay = (delay||0) + 0.15;
+        }
         this.animateInText(delay, killAfter);
     },
 
@@ -158,6 +204,21 @@ var Button = new Class({
 
     animateOutButton: function(delay, onComplete) {
         delay = delay || 0;
+
+        if (settings.isMobile) {
+            TweenLite.to(this.button, 1, {
+                delay: delay,
+                scaleX: 0.0,
+                ease: Expo.easeOut,
+                transformOrigin: "left center"
+            });
+            TweenLite.to(this.icon, 0.5, {
+                opacity: 0.0,
+                ease: Expo.easeOut,
+                delay: delay
+            });
+        } 
+
         TweenLite.to(this.button, 1.0, {
             opacity: 0.0,
             delay: delay,

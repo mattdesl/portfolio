@@ -65,7 +65,7 @@ var ViewManager = new Class({
             throw "Could not find view '"+name+"' in screens object";
 
         //get args after name
-        var args = Array.prototype.slice.call(arguments, 2);
+        var args = Array.prototype.slice.call(arguments, 1);
 
         //Maybe we have some data for this view?
         var data = null;
@@ -75,13 +75,17 @@ var ViewManager = new Class({
 
         //create the new class..
         var newClass = this.screens[name];
-        this.view = new newClass(this.parent, data);
+        this.view = new newClass(this, this.parent, data);
         this.viewName = name;
+
+        //This way the setup method can use the default width/height
+        this.view.width = this.width;
+        this.view.height = this.height;
 
         //called to setup the HTML
         this.view.setup.apply(this.view, args);
 
-        //called to resize the view
+        //After elements are created we can trigger a resize
         this.view.resize(this.width, this.height);
 
         //animate in this new section

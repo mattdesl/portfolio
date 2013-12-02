@@ -3,6 +3,7 @@ var View = require('../framework/View');
 var Widget = require('../ui/Widget');
 var settings = require('../core/settings');
 var Button = require('../ui/Button');
+var vecmath = require('../particles/math');
 
 
 var Home = new Class({
@@ -14,11 +15,15 @@ var Home = new Class({
         
         var headerData = this.data.header;
 
+        this.maxHeaderSize = 32;
+        this.defaultHeaderSize = 60;
+        this.headerSize = this.defaultHeaderSize;
+
         this.header.size("100%");
         this.header.absolute();
         this.header.css({
             overflow: "hidden",
-            fontSize: settings.HEADER_SIZE
+            fontSize: this.defaultHeaderSize
         });
 
         //setup text
@@ -27,9 +32,50 @@ var Home = new Class({
 
         this.header.append(this.header0, this.header1);
 
+        this.headerX = 0;
+        this.headerY = 0;
+        this.headerXOff = 0;
+        this.headerYOff = 0;
+        this.btnX = 0;
+        this.btnY = 0;
+        this.btnXOff = 0;
+        this.btnYOff = 0;
+
+
+        if (settings.isMobile && window.DeviceOrientationEvent) {
+            this.deviceOrientation = function(ev) {
+                var a = ev.alpha;
+                var b = ev.beta;
+                var g = ev.gamma;
+                
+                g/=360;
+                b/=360;
+
+                var scale = 0.75;
+
+                this.headerXOff = g*75 * scale;
+                // this.headerYOff = b*75 * scale;
+                // TweenLite.set(this.header, {
+                //     rotationZ: g
+                // })
+                this.header.position(this.headerX + this.headerXOff, this.headerY + this.headerYOff);
+
+                this.btnXOff = g*50 * scale;
+                // this.btnYOff = b*50 * scale;
+                this.buttonContainer.position(this.btnX + this.btnXOff, this.btnY + this.btnYOff);                
+            }.bind(this);
+
+            window.addEventListener("deviceorientation", this.deviceOrientation);
+        } 
 
         this.parentContainer.append(this.header);
 
+        //start them out of frame
+        // TweenLite.set([this.header0, this.header1], {
+        //     top: -this.maxHeaderSize
+        // });
+        // this.header0.css("top", -this.maxHeaderSize*2);
+        // this.header1.css("top", -this.maxHeaderSize*2);
 
         this.setupButtons();
 
@@ -37,6 +83,9 @@ var Home = new Class({
     },
 
     destroy: function() {
+        if (this.deviceOrientation) {
+            window.removeEventListener("deviceorientation", this.deviceorientation);
+        }
 
         this.header.detach();
         this.buttonContainer.detach();
@@ -49,9 +98,7 @@ var Home = new Class({
 
         var scale = Math.min(1.0, Math.min(width / settings.TARGET_WIDTH, height / settings.TARGET_HEIGHT));
 
-
-
-        this.headerSize = Math.max(32, Math.round(settings.HEADER_SIZE * scale));
+        this.headerSize = Math.max(this.maxHeaderSize, Math.round(this.defaultHeaderSize * scale));
         
         var btnMidY = (height - this.buttonContainerHeight)/2; 
 
@@ -71,17 +118,21 @@ var Home = new Class({
 
         this.header.css("font-size", this.headerSize + "px");
 
-        this.buttonContainer.position(undefined, btnY);
-        this.header.position(undefined, headerY);
+        this.btnX = 0;
+        this.btnY = btnY;
+        this.buttonContainer.position(this.btnX + this.btnXOff, this.btnY + this.btnYOff);
+        this.headerX = 0;
+        this.headerY = headerY;
+        this.header.position(this.headerX + this.headerXOff, this.headerY + this.headerYOff);
 
     },
 
     animateIn: function() {
-        var startDelay = 0.2;
+        var startDelay = 0.4;
         
         ////// Animate in the header content
         TweenLite.fromTo(this.header0, 0.65, {
-            top: -this.headerSize,
+            top: -this.headerSize*2,
         }, {
             top: 0,
             delay: startDelay,
@@ -89,12 +140,13 @@ var Home = new Class({
         });        
 
         TweenLite.fromTo(this.header1, 0.65, {
-            top: -this.headerSize,
+            top: -this.headerSize*2,
         }, {
             top: 0,
             delay: 0.1 + startDelay,
             ease: Expo.easeOut,
         });
+
 
         startDelay += 0.5;
         for (var i=0; i<this.buttons.length; i++) {
@@ -111,16 +163,23 @@ var Home = new Class({
             }
 
             if (settings.isMobile) {
-                to['onStart'] = btn.animateInButton.bind(btn);
+                to['onStart'] = btn.animateIn.bind(btn);
             } else {
+                btn.ignoreHover = true;
                 btn.ignoreTextEffect = true;
+
                 TweenLite.delayedCall(1.75 + startDelay, function(selfBtn) {
                     selfBtn.ignoreTextEffect = false;
                 }.bind(this, btn));
-                to['onStart'] = btn.animateIn.bind(btn, 0.0, 1.75);
+                
+                to['onStart'] = function(selfBtn) {
+                    selfBtn.ignoreHover = false;
+                    selfBtn.animateIn(0.0, 1.75);
+                }.bind(this, btn);
+                // to['onStart'] = btn.animateInButton.bind(btn, 0.9, 1.2);
             }
 
-            TweenLite.fromTo(btn, 1, {
+            TweenLite.fromTo(btn.icon, 1, {
                 opacity: 0.0
             }, to);
         }

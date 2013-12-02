@@ -11,7 +11,6 @@ var Settings = new Class({
     initialize: function() {
         this.TARGET_WIDTH = 800;
         this.TARGET_HEIGHT = 500;
-        this.HEADER_SIZE = 60;
 
         this.isMobile = mobileCheck();
     },
